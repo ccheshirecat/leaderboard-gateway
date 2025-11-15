@@ -10,10 +10,25 @@ const config: ZudokuConfig = {
     title: "Leaderboard API Gateway",
     logo: {
       src: {
-        light: "/badge.webp",
-        dark: "/badge.webp",
+        light: "/dark.png",
+        dark: "/light.png",
       },
+      alt: "badge",
+      width: "125px"
     },
+  },
+  theme: {
+    customCss: `
+      navigation {
+        height: auto !important;
+        min-height: 250px !important;
+      }
+      header img {
+        max-height: 220px !important;
+        width: auto !important;
+        max-width: 125px !important;
+      }
+    `,
   },
   metadata: {
     title: "Developer Portal",
