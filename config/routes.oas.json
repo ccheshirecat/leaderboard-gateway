@@ -1,8 +1,37 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "1.0.0",
-    "title": "My Zuplo API"
+    "title": "My Zuplo API",
+    "version": "1.0.0"
   },
-  "paths": {}
+  "paths": {
+    "/leaderboard": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "Retrieve sanitized leaderboard data",
+        "description": "Sanitizes data",
+        "x-zuplo-route": {
+          "corsPolicy": "anything-goes",
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${\"\"}${env.CASINO_URL}"
+            }
+          },
+          "policies": {
+            "inbound": [
+              "api-key-inbound"
+            ],
+            "outbound": [
+              "sanitize-leaderboard-data"
+            ]
+          }
+        },
+        "operationId": "leaderboard"
+      }
+    }
+  }
 }

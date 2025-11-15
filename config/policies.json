@@ -1,3 +1,24 @@
 {
-  "policies": []
+  "policies": [
+    {
+      "handler": {
+        "export": "ApiKeyInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "allowUnauthenticatedRequests": false,
+          "cacheTtlSeconds": 60
+        }
+      },
+      "name": "api-key-inbound",
+      "policyType": "api-key-inbound"
+    },
+    {
+      "handler": {
+        "export": "default",
+        "module": "$import(./modules/sanitize-leaderboard-data)"
+      },
+      "name": "sanitize-leaderboard-data",
+      "policyType": "custom-code-outbound"
+    }
+  ]
 }

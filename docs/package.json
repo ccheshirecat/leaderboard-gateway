@@ -11,7 +11,8 @@
     "react": "^19",
     "react-dom": "^19",
     "@mdx-js/react": "3.0.1",
-    "zudoku": "^0.64"
+    "zudoku": "^0.64",
+    "dotenv": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
