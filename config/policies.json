@@ -1,24 +1,39 @@
 {
   "policies": [
     {
+      "name": "api-key-inbound",
+      "policyType": "api-key-inbound",
       "handler": {
-        "export": "ApiKeyInboundPolicy",
         "module": "$import(@zuplo/runtime)",
+        "export": "ApiKeyInboundPolicy",
         "options": {
           "allowUnauthenticatedRequests": false,
           "cacheTtlSeconds": 60
         }
-      },
-      "name": "api-key-inbound",
-      "policyType": "api-key-inbound"
+      }
     },
+
     {
+      "name": "inject-casino-token",
+      "policyType": "add-request-headers",
       "handler": {
-        "export": "default",
-        "module": "$import(./modules/sanitize-leaderboard-data)"
-      },
+        "module": "$import(@zuplo/runtime)",
+        "export": "AddRequestHeadersPolicy",
+        "options": {
+          "headers": {
+            "cookie": "${env.CASINO_COOKIE}"
+          }
+        }
+      }
+    },
+
+    {
       "name": "sanitize-leaderboard-data",
-      "policyType": "custom-code-outbound"
+      "policyType": "custom-code-outbound",
+      "handler": {
+        "module": "$import(./modules/sanitize-leaderboard-data)",
+        "export": "default"
+      }
     }
   ]
 }

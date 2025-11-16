@@ -1,17 +1,18 @@
 export default async function (response, request, context) {
   const data = await response.json();
 
-  // ---- Find the leaderboard array anywhere in the response ----
+  // ---- Find deepest array containing leaderboard-like objects ----
   const findArray = (obj) => {
     if (Array.isArray(obj)) return obj;
 
     if (obj && typeof obj === "object") {
       for (const v of Object.values(obj)) {
-        if (Array.isArray(v)) return v;
-        if (v && typeof v === "object") {
-          const nested = findArray(v);
-          if (Array.isArray(nested)) return nested;
-        }
+        const res =
+          Array.isArray(v) ? v :
+          typeof v === "object" ? findArray(v) :
+          null;
+
+        if (Array.isArray(res)) return res;
       }
     }
 
@@ -20,10 +21,10 @@ export default async function (response, request, context) {
 
   const items = findArray(data);
 
-  // ---- Extract the best-match field by name patterns ----
-  const extract = (obj, patterns) => {
-    let bestValue = null;
+  // ---- Smart field extractor ----
+  const extract = (root, patterns, { allowObjects = false } = {}) => {
     let bestScore = 0;
+    let bestValue = null;
 
     const walk = (o) => {
       if (!o || typeof o !== "object") return;
@@ -32,27 +33,42 @@ export default async function (response, request, context) {
         const key = k.toLowerCase();
 
         for (const p of patterns) {
-          if (key.includes(p) && typeof v !== "object") {
+          if (key.includes(p)) {
             const score = p.length;
-            if (score > bestScore) {
-              bestScore = score;
-              bestValue = v;
+
+            // Return object fields only if allowed (wager objects)
+            if (typeof v === "object" && allowObjects) {
+              if (score > bestScore) {
+                bestScore = score;
+                bestValue = v;
+              }
+            }
+
+            // Return primitives normally
+            if (typeof v !== "object") {
+              if (score > bestScore) {
+                bestScore = score;
+                bestValue = v;
+              }
             }
           }
         }
 
+        // Walk deeper
         if (typeof v === "object") walk(v);
       }
     };
 
-    walk(obj);
+    walk(root);
     return bestValue;
   };
 
-  // ---- Emit ONLY username + wager ----
+  // ---- Only emit what the frontend needs ----
   const out = items.map((item) => ({
     username: extract(item, ["username", "user", "player", "name"]),
-    wager: extract(item, ["wager", "bet", "amount", "value"]),
+    wager: extract(item, ["wager", "wager_total", "value", "amount", "bet"], {
+      allowObjects: true, // *THIS IS THE IMPORTANT FIX*
+    }),
   }));
 
   return new Response(JSON.stringify(out), {

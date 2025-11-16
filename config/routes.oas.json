@@ -12,56 +12,30 @@
       },
       "get": {
         "summary": "Retrieve sanitized leaderboard data",
-        "description": "Fetches leaderboard data from the configured casino API and returns only sanitized player information (username and wager amounts). All other sensitive data is automatically removed. Requires API key authentication.",
-        "tags": ["Leaderboard"],
+        "description": "Fetches leaderboard data from the casino API using a secure backend token stored as an environment variable, then sanitizes the response to expose only username and wager.",
+        "tags": [
+          "Leaderboard"
+        ],
         "responses": {
           "200": {
-            "description": "Sanitized leaderboard data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "username": {
-                        "type": "string",
-                        "description": "Player username"
-                      },
-                      "wager": {
-                        "type": "number",
-                        "description": "Wager amount"
-                      }
-                    }
-                  }
-                },
-                "example": [
-                  {
-                    "username": "Player1",
-                    "wager": 1200
-                  },
-                  {
-                    "username": "Player2",
-                    "wager": 950
-                  }
-                ]
-              }
-            }
+            "description": "Sanitized leaderboard data"
           },
           "401": {
             "description": "Unauthorized - Invalid or missing API key"
           },
           "500": {
-            "description": "Internal server error - Issue connecting to casino API or processing response"
+            "description": "Internal server error"
           }
         },
+        "operationId": "leaderboard",
         "x-zuplo-route": {
           "corsPolicy": "anything-goes",
           "handler": {
             "export": "urlRewriteHandler",
             "module": "$import(@zuplo/runtime)",
             "options": {
-              "rewritePattern": "${\"\"}${env.CASINO_URL}"
+              "rewritePattern": "${env.CASINO_URL}",
+              "forwardSearch": true
             }
           },
           "policies": {
@@ -69,11 +43,11 @@
               "api-key-inbound"
             ],
             "outbound": [
+              "inject-casino-token",
               "sanitize-leaderboard-data"
             ]
           }
-        },
-        "operationId": "leaderboard"
+        }
       }
     }
   }
