@@ -40,10 +40,10 @@
           },
           "policies": {
             "inbound": [
-              "api-key-inbound"
+              "api-key-inbound",
+              "inject-casino-token"
             ],
             "outbound": [
-              "inject-casino-token",
               "sanitize-leaderboard-data"
             ]
           }

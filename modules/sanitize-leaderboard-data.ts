@@ -1,7 +1,28 @@
 export default async function (response, request, context) {
+  // Check if the upstream response was successful
+  if (!response.ok) {
+    return new Response(JSON.stringify({ error: "Failed to fetch from casino API" }), {
+      headers: { "content-type": "application/json" },
+      status: 500,
+    });
+  }
+
   const data = await response.json();
 
-  // ---- Find deepest array containing leaderboard-like objects ----
+  // Quick path: Check if data.items exists (your API structure)
+  if (data.items && Array.isArray(data.items)) {
+    const out = data.items.map((item) => ({
+      username: item.username || null,
+      wager: item.wager?.value || item.wager || null,
+    }));
+
+    return new Response(JSON.stringify(out), {
+      headers: { "content-type": "application/json" },
+      status: 200,
+    });
+  }
+
+  // Fallback: Find deepest array containing leaderboard-like objects
   const findArray = (obj) => {
     if (Array.isArray(obj)) return obj;
 
@@ -64,12 +85,20 @@ export default async function (response, request, context) {
   };
 
   // ---- Only emit what the frontend needs ----
-  const out = items.map((item) => ({
-    username: extract(item, ["username", "user", "player", "name"]),
-    wager: extract(item, ["wager", "wager_total", "value", "amount", "bet"], {
-      allowObjects: true, // *THIS IS THE IMPORTANT FIX*
-    }),
-  }));
+  const out = items.map((item) => {
+    const username = extract(item, ["username", "user", "player", "name"]);
+    const wagerObj = extract(item, ["wager", "wager_total", "amount", "bet"], {
+      allowObjects: true,
+    });
+
+    // Extract the numeric value from wager object if it exists
+    let wager = wagerObj;
+    if (wagerObj && typeof wagerObj === "object" && wagerObj.value !== undefined) {
+      wager = wagerObj.value;
+    }
+
+    return { username, wager };
+  });
 
   return new Response(JSON.stringify(out), {
     headers: { "content-type": "application/json" },

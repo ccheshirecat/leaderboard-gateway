@@ -8,6 +8,7 @@
         "export": "ApiKeyInboundPolicy",
         "options": {
           "allowUnauthenticatedRequests": false,
+          "bucketName": "zprj-qcovfyidczvmgrirjlseubvl-production",
           "cacheTtlSeconds": 60
         }
       }
@@ -15,14 +16,17 @@
 
     {
       "name": "inject-casino-token",
-      "policyType": "add-request-headers",
+      "policyType": "set-headers-inbound",
       "handler": {
-        "export": "default",
+        "export": "SetHeadersInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
-          "headers": {
-            "cookie": "${env.CASINO_COOKIE}"
-          }
+          "headers": [
+            {
+              "name": "cookie",
+              "value": "$env(CASINO_COOKIE)"
+            }
+          ]
         }
       }
     },
