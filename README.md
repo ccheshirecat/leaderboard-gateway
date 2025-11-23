@@ -82,6 +82,9 @@ Your gateway will be deployed at: `https://your-project-name.zuplo.app`
 3. Set:
    - **Name:** `CASINO_COOKIE`
    - **Value:** Your casino account token, e.g. thrill.com cookie
+   - --**Name:** `CASINO_URL`
+   - **Value:** The casino endpoint to make the request to. E.g. thrill's endpoint is https://api.thrill.com/referral/v1/referral-links
+
 4. Click **"Save"**
 
 > ⚠️ **Important:** This URL stays private in your Zuplo environment. Nobody else can see it.
