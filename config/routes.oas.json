@@ -40,8 +40,8 @@
           },
           "policies": {
             "inbound": [
-              "api-key-inbound",
-              "inject-casino-token"
+              "inject-casino-token",
+              "basic-auth-inbound"
             ],
             "outbound": [
               "sanitize-leaderboard-data"

@@ -1,20 +1,6 @@
 {
   "policies": [
     {
-      "name": "api-key-inbound",
-      "policyType": "api-key-inbound",
-      "handler": {
-        "module": "$import(@zuplo/runtime)",
-        "export": "ApiKeyInboundPolicy",
-        "options": {
-          "allowUnauthenticatedRequests": false,
-          "bucketName": "zprj-js1d7dq2a3vik1va3cux9dyt-production",
-          "cacheTtlSeconds": 60
-        }
-      }
-    },
-
-    {
       "name": "inject-casino-token",
       "policyType": "set-headers-inbound",
       "handler": {
@@ -30,7 +16,6 @@
         }
       }
     },
-
     {
       "name": "sanitize-leaderboard-data",
       "policyType": "custom-code-outbound",
@@ -38,6 +23,23 @@
         "module": "$import(./modules/sanitize-leaderboard-data)",
         "export": "default"
       }
+    },
+    {
+      "handler": {
+        "export": "BasicAuthInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "accounts": [
+            {
+              "password": "a1oneldbdev2025prod",
+              "username": "a1oneldbdev2025prod"
+            }
+          ],
+          "allowUnauthenticatedRequests": false
+        }
+      },
+      "name": "basic-auth-inbound",
+      "policyType": "basic-auth-inbound"
     }
   ]
 }
