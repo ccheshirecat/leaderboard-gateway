@@ -8,7 +8,7 @@
         "export": "ApiKeyInboundPolicy",
         "options": {
           "allowUnauthenticatedRequests": false,
-          "bucketName": "zprj-qcovfyidczvmgrirjlseubvl-production",
+          "bucketName": "zprj-js1d7dq2a3vik1va3cux9dyt-production",
           "cacheTtlSeconds": 60
         }
       }
