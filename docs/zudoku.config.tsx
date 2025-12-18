@@ -227,9 +227,6 @@ body {
       path: "api",
     },
   ],
-  apiKeys: {
-    enabled: true,
-  },
 
 };
 
