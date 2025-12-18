@@ -17,7 +17,7 @@ This API gateway provides secure, sanitized access to casino leaderboard data. I
 
 Retrieves sanitized leaderboard data.
 
-**Authentication:** API Key required (Bearer token)
+**Authentication:** username and password**
 
 **Request:**
 ```bash
@@ -42,7 +42,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 ## Security
 
 ### API Key Authentication
-All requests require a valid API key. Requests without a valid key will receive a `401 Unauthorized` response.
+All requests require username and password
 
 ### Data Sanitization
 The gateway automatically sanitizes all responses from your casino API:
